@@ -39,16 +39,12 @@ public class NEISPH implements IServerPacketHandler
                 setInventorySlot(sender, packet);
                 break;
             case 6:
-                NEIServerUtils.toggleMagnetMode(sender);
                 break;
             case 7:
-                NEIServerUtils.setHourForward(sender.worldObj, packet.readUByte(), true);
                 break;
             case 8:
-                NEIServerUtils.healPlayer(sender);
                 break;
             case 9:
-                NEIServerUtils.toggleRaining(sender.worldObj, true);
                 break;
             case 10:
                 sendLoginState(sender);
@@ -60,7 +56,6 @@ public class NEISPH implements IServerPacketHandler
                 handlePropertyChange(sender, packet);
                 break;
             case 13:
-                NEIServerUtils.setGamemode(sender, packet.readUByte());
                 break;
             case 14:
                 NEIServerUtils.cycleCreativeInv(sender, packet.readInt());
@@ -69,16 +64,13 @@ public class NEISPH implements IServerPacketHandler
                 handleMobSpawnerID(sender.worldObj, packet.readCoord(), packet.readString());
                 break;
             case 21:
-                openEnchantmentGui(sender);
                 break;
             case 22:
-                modifyEnchantment(sender, packet.readUByte(), packet.readUByte(), packet.readBoolean());
                 break;
             case 23:
                 processCreativeInv(sender, packet.readBoolean());
                 break;
             case 24:
-                openPotionGui(sender, packet);
                 break;
             case 25:
                 handleDummySlotSet(sender, packet);
@@ -145,42 +137,6 @@ public class NEISPH implements IServerPacketHandler
             NEIServerUtils.setSlotContents(player, slot, item, container);
     }
 
-    private void modifyEnchantment(EntityPlayerMP player, int e, int lvl, boolean add) {
-        ContainerEnchantmentModifier containerem = (ContainerEnchantmentModifier) player.openContainer;
-        if (add) {
-            containerem.addEnchantment(e, lvl);
-        } else {
-            containerem.removeEnchantment(e);
-        }
-    }
-
-    private void openEnchantmentGui(EntityPlayerMP player) {
-        ServerUtils.openSMPContainer(player, new ContainerEnchantmentModifier(player.inventory, player.worldObj, 0, 0, 0), new IGuiPacketSender()
-        {
-            @Override
-            public void sendPacket(EntityPlayerMP player, int windowId) {
-                PacketCustom packet = new PacketCustom(channel, 21);
-                packet.writeByte(windowId);
-                packet.sendToPlayer(player);
-            }
-        });
-    }
-
-    private void openPotionGui(EntityPlayerMP player, PacketCustom packet) {
-        InventoryBasic b = new InventoryBasic("potionStore", true, 9);
-        for (int i = 0; i < b.getSizeInventory(); i++)
-            b.setInventorySlotContents(i, packet.readItemStack());
-        ServerUtils.openSMPContainer(player, new ContainerPotionCreator(player.inventory, b), new IGuiPacketSender()
-        {
-            @Override
-            public void sendPacket(EntityPlayerMP player, int windowId) {
-                PacketCustom packet = new PacketCustom(channel, 24);
-                packet.writeByte(windowId);
-                packet.sendToPlayer(player);
-            }
-        });
-    }
-
     public static void sendActionDisabled(int dim, String name, boolean disable) {
         new PacketCustom(channel, 11)
                 .writeString(name)
@@ -240,13 +196,6 @@ public class NEISPH implements IServerPacketHandler
         PacketCustom packet = new PacketCustom(channel, 1);
         packet.writeByte(NEIActions.protocol);
         packet.writeString(CommonUtils.getWorldName(player.worldObj));
-
-        packet.sendToPlayer(player);
-    }
-
-    public static void sendAddMagneticItemTo(EntityPlayerMP player, EntityItem item) {
-        PacketCustom packet = new PacketCustom(channel, 13);
-        packet.writeInt(item.getEntityId());
 
         packet.sendToPlayer(player);
     }

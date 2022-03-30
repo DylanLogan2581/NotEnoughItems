@@ -46,32 +46,9 @@ public class NEIActions
     
     public static void init()
     {
-        addAction("time");
-        addAction("dawn", "time");
-        addAction("noon", "time");
-        addAction("dusk", "time");
-        addAction("midnight", "time");
-        addAction("creative");
-        addAction("creative+", true);
-        addAction("adventure", "creative");
-        addAction("rain");
         addAction("item");
-        addAction("heal");
-        addAction("delete", true);
-        addAction("magnet", true);
-        addAction("enchant", true);
-        addAction("potion", true);
-
-        canDisable.add("dawn");
-        canDisable.add("noon");
-        canDisable.add("dusk");
-        canDisable.add("midnight");
-        canDisable.add("rain");
     }
     
-    public static final String[] timeZones = new String[]{"dawn", "noon", "dusk", "midnight"};
-    public static final String[] gameModes = new String[]{"survival", "creative", "creative+", "adventure"};
-
     public String name;
     public String base;
     public boolean smpreq;

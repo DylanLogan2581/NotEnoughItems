@@ -199,64 +199,6 @@ public class NEIClientUtils extends NEIServerUtils
         return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
     }
 
-    public static int getGamemode() {
-        if (invCreativeMode())
-            return 2;
-        else if (mc().playerController.isInCreativeMode())
-            return 1;
-        else if (mc().playerController.currentGameType.isAdventure())
-            return 3;
-        else
-            return 0;
-    }
-
-    public static boolean isValidGamemode(String s) {
-        return s.equals("survival") ||
-                canPerformAction(s) &&
-                        Arrays.asList(getStringArrSetting("inventory.gamemodes")).contains(s);
-    }
-
-    public static int getNextGamemode() {
-        int mode = getGamemode();
-        int nmode = mode;
-        while (true) {
-            nmode = (nmode + 1) % NEIActions.gameModes.length;
-            if (nmode == mode || isValidGamemode(NEIActions.gameModes[nmode]))
-                break;
-        }
-        return nmode;
-    }
-
-    public static void cycleGamemode() {
-        int mode = getGamemode();
-        int nmode = getNextGamemode();
-        if (mode == nmode)
-            return;
-
-        if (hasSMPCounterPart())
-            NEICPH.sendGamemode(nmode);
-        else
-            sendCommand(getStringSetting("command.creative"), getGameType(nmode), mc().thePlayer.getCommandSenderName());
-    }
-
-    public static long getTime() {
-        return mc().theWorld.getWorldInfo().getWorldTime();
-    }
-
-    public static void setTime(long l) {
-        mc().theWorld.getWorldInfo().setWorldTime(l);
-    }
-
-    public static void setHourForward(int hour) {
-        long day = (getTime() / 24000L) * 24000L;
-        long newTime = day + 24000L + hour * 1000;
-
-        if (hasSMPCounterPart())
-            NEICPH.sendSetTime(hour);
-        else
-            sendCommand(getStringSetting("command.time"), newTime);
-    }
-
     public static void sendCommand(String command, Object... args) {
         if (command.length() == 0)
             return;
@@ -269,29 +211,6 @@ public class NEIClientUtils extends NEIServerUtils
                 messageformat.setFormatByArgumentIndex(i, numberformat);
 
         mc().thePlayer.sendChatMessage(messageformat.format(args));
-    }
-
-    public static boolean isRaining() {
-        return mc().theWorld.getWorldInfo().isRaining();
-    }
-
-    public static void toggleRaining() {
-        if (hasSMPCounterPart())
-            NEICPH.sendToggleRain();
-        else
-            sendCommand(getStringSetting("command.rain"), isRaining() ? 0 : 1);
-    }
-
-    public static void healPlayer() {
-        if (hasSMPCounterPart())
-            NEICPH.sendHeal();
-        else
-            sendCommand(getStringSetting("command.heal"), mc().thePlayer.getCommandSenderName());
-    }
-
-    public static void toggleMagnetMode() {
-        if (hasSMPCounterPart())
-            NEICPH.sendToggleMagnetMode();
     }
 
     public static ArrayList<int[]> concatIntegersToRanges(List<Integer> damages) {

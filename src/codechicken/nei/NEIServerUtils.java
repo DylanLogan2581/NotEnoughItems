@@ -31,35 +31,6 @@ import java.util.zip.ZipException;
 
 public class NEIServerUtils
 {
-    public static boolean isRaining(World world) {
-        return world.getWorldInfo().isRaining();
-    }
-
-    public static void toggleRaining(World world, boolean notify) {
-        boolean raining = !world.isRaining();
-        if (!raining)//turn off
-            ((WorldServer) world).provider.resetRainAndThunder();
-        else
-            world.getWorldInfo().setRaining(!isRaining(world));
-
-        if (notify)
-            ServerUtils.sendChatToAll(new ChatComponentTranslation("nei.chat.rain." + (raining ? "on" : "off")));
-    }
-
-    public static void healPlayer(EntityPlayer player) {
-        player.heal(20);
-        player.getFoodStats().addStats(20, 1);
-        player.extinguish();
-    }
-
-    public static long getTime(World world) {
-        return world.getWorldInfo().getWorldTime();
-    }
-
-    public static void setTime(long l, World world) {
-        world.getWorldInfo().setWorldTime(l);
-    }
-
     public static void setSlotContents(EntityPlayer player, int slot, ItemStack item, boolean containerInv) {
         if (slot == -999)
             player.inventory.setItemStack(item);
@@ -84,25 +55,6 @@ public class NEIServerUtils
             slot.putStack(null);
 
         player.sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
-    }
-
-    public static void setHourForward(World world, int hour, boolean notify) {
-        long day = (getTime(world) / 24000L) * 24000L;
-        long newTime = day + 24000L + hour * 1000;
-        setTime(newTime, world);
-        if (notify)
-            ServerUtils.sendChatToAll(new ChatComponentTranslation("nei.chat.time", getTime(world) / 24000L, hour));
-    }
-
-    public static void advanceDisabledTimes(World world) {
-        int dim = CommonUtils.getDimension(world);
-        int hour = (int) (getTime(world) % 24000) / 1000;
-        int newhour = hour;
-        while (NEIServerConfig.isActionDisabled(dim, NEIActions.timeZones[newhour / 6]))
-            newhour = ((newhour / 6 + 1) % 4) * 6;
-
-        if (newhour != hour)
-            setHourForward(world, newhour, false);
     }
 
     public static boolean canItemFitInInventory(EntityPlayer player, ItemStack itemstack) {
@@ -205,11 +157,6 @@ public class NEIServerUtils
         return copyStack(itemstack, itemstack.stackSize);
     }
 
-    public static void toggleMagnetMode(EntityPlayerMP player) {
-        PlayerSave playerSave = NEIServerConfig.forPlayer(player.getCommandSenderName());
-        playerSave.enableAction("magnet", !playerSave.isActionEnabled("magnet"));
-    }
-
     public static int getCreativeMode(EntityPlayerMP player) {
         if (NEIServerConfig.forPlayer(player.getCommandSenderName()).isActionEnabled("creative+"))
             return 2;
@@ -232,25 +179,6 @@ public class NEIServerUtils
                 return GameType.ADVENTURE;
         }
         return null;
-    }
-
-    public static void setGamemode(EntityPlayerMP player, int mode) {
-        if (mode < 0 || mode >= NEIActions.gameModes.length ||
-                NEIActions.nameActionMap.containsKey(NEIActions.gameModes[mode]) &&
-                        !NEIServerConfig.canPlayerPerformAction(player.getCommandSenderName(), NEIActions.gameModes[mode]))
-            return;
-
-        //creative+
-        NEIServerConfig.forPlayer(player.getCommandSenderName()).enableAction("creative+", mode == 2);
-        if(mode == 2 && !(player.openContainer instanceof ContainerCreativeInv))//open the container immediately for the client
-            NEISPH.processCreativeInv(player, true);
-
-        //change it on the server
-        player.theItemInWorldManager.setGameType(getGameType(mode));
-
-        //tell the client to change it
-        new PacketCustom(NEISPH.channel, 14).writeByte(mode).sendToPlayer(player);
-        player.addChatMessage(new ChatComponentTranslation("nei.chat.gamemode." + mode));
     }
 
     public static void cycleCreativeInv(EntityPlayerMP player, int steps) {

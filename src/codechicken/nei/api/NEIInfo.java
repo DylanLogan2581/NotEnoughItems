@@ -11,19 +11,5 @@ public class NEIInfo
     public static final LinkedList<INEIModeHandler> modeHandlers = new LinkedList<INEIModeHandler>();
 
     public static void load(World world) {
-        OptionCycled modeOption = (OptionCycled) NEIClientConfig.getOptionList().getOption("inventory.cheatmode");
-        modeOption.parent.synthesizeEnvironment(false);
-        if(!modeOption.optionValid(modeOption.value())) {
-            modeOption.copyGlobals();
-            modeOption.cycle();
-        }
-    }
-
-    public static boolean isValidMode(int mode) {
-        for(INEIModeHandler handler : modeHandlers)
-            if(!handler.isModeValid(mode))
-                return false;
-        
-        return true;
     }
 }

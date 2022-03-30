@@ -55,53 +55,7 @@ public abstract class LayoutStyleDefault extends LayoutStyle
         options.w = 80;
         options.h = 22;
 
-        delete.state = 0x4;
-        if (NEIController.getDeleteMode())
-            delete.state |= 1;
-        else if (!visiblity.enableDeleteMode)
-            delete.state |= 2;
-
-        rain.state = 0x4;
-        if (disabledActions.contains("rain"))
-            rain.state |= 2;
-        else if (NEIClientUtils.isRaining())
-            rain.state |= 1;
-
-        gamemode.state = 0x4;
-        if (NEIClientUtils.getGamemode() != 0) {
-            gamemode.state |= 0x1;
-            gamemode.index = NEIClientUtils.getGamemode() - 1;
-        } else {
-            if (NEIClientUtils.isValidGamemode("creative"))
-                gamemode.index = 0;
-            else if (NEIClientUtils.isValidGamemode("creative+"))
-                gamemode.index = 1;
-            else if (NEIClientUtils.isValidGamemode("adventure"))
-                gamemode.index = 2;
-        }
-
-        magnet.state = 0x4 | (getMagnetMode() ? 1 : 0);
-
-        if (canPerformAction("delete"))
-            layoutButton(delete);
-        if (canPerformAction("rain"))
-            layoutButton(rain);
-        if (NEIClientUtils.isValidGamemode("creative") ||
-                NEIClientUtils.isValidGamemode("creative+") ||
-                NEIClientUtils.isValidGamemode("adventure"))
-            layoutButton(gamemode);
-        if (canPerformAction("magnet"))
-            layoutButton(magnet);
-        if (canPerformAction("time")) {
-            for (int i = 0; i < 4; i++) {
-                timeButtons[i].state = disabledActions.contains(NEIActions.timeZones[i]) ? 2 : 0;
-                layoutButton(timeButtons[i]);
-            }
-        }
-        if (canPerformAction("heal"))
-            layoutButton(heal);
-
-        searchField.y = windowHeight - searchField.h - 2;
+	searchField.y = windowHeight - searchField.h - 2;
 
         dropDown.h = 20;
         dropDown.w = prev.x - dropDown.x - 3;

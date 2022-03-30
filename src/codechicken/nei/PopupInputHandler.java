@@ -28,16 +28,6 @@ public class PopupInputHandler implements IContainerInputHandler
     @Override
     public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyID)
     {
-        if(keyID == getKeyBinding("gui.enchant") && canPerformAction("enchant"))
-        {
-            NEICPH.sendOpenEnchantmentWindow();
-            return true;
-        }
-        if(keyID == getKeyBinding("gui.potion") && canPerformAction("potion"))
-        {
-            NEICPH.sendOpenPotionWindow();
-            return true;
-        }
         return false;
     }
 

@@ -56,31 +56,10 @@ public class NEIClientConfig
 
     private static void setDefaults() {
         ConfigTagParent tag = global.config;
-        tag.setComment("Main configuration of NEI.\nMost of these options can be changed ingame.\nDeleting any element will restore it to it's default value");
 
-        tag.getTag("command").useBraces().setComment("Change these options if you have a different mod installed on the server that handles the commands differently, Eg. Bukkit Essentials");
         tag.setNewLineMode(1);
 
-        tag.getTag("inventory.widgetsenabled").getBooleanValue(true);
-        API.addOption(new OptionToggleButton("inventory.widgetsenabled"));
-
         tag.getTag("inventory.hidden").getBooleanValue(false);
-        tag.getTag("inventory.cheatmode").getIntValue(2);
-        tag.getTag("inventory.lockmode").setComment("For those who can't help themselves.\nSet this to a mode and you will be unable to change it ingame").getIntValue(-1);
-        API.addOption(new OptionCycled("inventory.cheatmode", 3)
-        {
-            @Override
-            public boolean optionValid(int index) {
-                return getLockedMode() == -1 || getLockedMode() == index && NEIInfo.isValidMode(index);
-            }
-        });
-        checkCheatMode();
-
-        tag.getTag("inventory.utilities").setDefaultValue("delete, magnet");
-        API.addOption(new OptionUtilities("inventory.utilities"));
-
-        tag.getTag("inventory.gamemodes").setDefaultValue("creative, creative+, adventure");
-        API.addOption(new OptionGamemodes("inventory.gamemodes"));
 
         tag.getTag("inventory.layoutstyle").getIntValue(0);
 
@@ -95,16 +74,8 @@ public class NEIClientConfig
         tag.getTag("inventory.profileRecipes").getBooleanValue(false);
         API.addOption(new OptionToggleButton("inventory.profileRecipes", true));
 
-        tag.getTag("command.creative").setDefaultValue("/gamemode {0} {1}");
-        API.addOption(new OptionTextField("command.creative"));
         tag.getTag("command.item").setDefaultValue("/give {0} {1} {2} {3} {4}");
         API.addOption(new OptionTextField("command.item"));
-        tag.getTag("command.time").setDefaultValue("/time set {0}");
-        API.addOption(new OptionTextField("command.time"));
-        tag.getTag("command.rain").setDefaultValue("/toggledownfall");
-        API.addOption(new OptionTextField("command.rain"));
-        tag.getTag("command.heal").setDefaultValue("");
-        API.addOption(new OptionTextField("command.heal"));
 
         setDefaultKeyBindings();
     }
@@ -138,21 +109,12 @@ public class NEIClientConfig
         API.addKeyBind("gui.recipe", Keyboard.KEY_R);
         API.addKeyBind("gui.usage", Keyboard.KEY_U);
         API.addKeyBind("gui.back", Keyboard.KEY_BACK);
-        API.addKeyBind("gui.enchant", Keyboard.KEY_X);
-        API.addKeyBind("gui.potion", Keyboard.KEY_P);
         API.addKeyBind("gui.prev", Keyboard.KEY_PRIOR);
         API.addKeyBind("gui.next", Keyboard.KEY_NEXT);
         API.addKeyBind("gui.hide", Keyboard.KEY_O);
         API.addKeyBind("gui.search", Keyboard.KEY_F);
         API.addKeyBind("world.chunkoverlay", Keyboard.KEY_F9);
         API.addKeyBind("world.moboverlay", Keyboard.KEY_F7);
-        API.addKeyBind("world.dawn", 0);
-        API.addKeyBind("world.noon", 0);
-        API.addKeyBind("world.dusk", 0);
-        API.addKeyBind("world.midnight", 0);
-        API.addKeyBind("world.rain", 0);
-        API.addKeyBind("world.heal", 0);
-        API.addKeyBind("world.creative", 0);
     }
 
     public static OptionList getOptionList() {
@@ -181,9 +143,6 @@ public class NEIClientConfig
         LayoutManager.searchField.setText(getSearchExpression());
         LayoutManager.quantity.setText(Integer.toString(getItemQuantity()));
         SubsetWidget.loadHidden();
-
-        if (newWorld && Minecraft.getMinecraft().isSingleplayer())
-            world.config.getTag("inventory.cheatmode").setIntValue(NEIClientUtils.mc().playerController.isInCreativeMode() ? 2 : 0);
 
         NEIInfo.load(ClientUtils.getWorld());
     }
@@ -271,7 +230,7 @@ public class NEIClientConfig
     }
 
     public static boolean isEnabled() {
-        return enabledOverride && getBooleanSetting("inventory.widgetsenabled");
+        return enabledOverride;
     }
 
     public static void setEnabled(boolean flag) {
@@ -280,19 +239,6 @@ public class NEIClientConfig
 
     public static int getItemQuantity() {
         return world.nbt.getInteger("quantity");
-    }
-
-    public static int getCheatMode() {
-        return getIntSetting("inventory.cheatmode");
-    }
-
-    private static void checkCheatMode() {
-        if (getLockedMode() != -1)
-            setIntSetting("inventory.cheatmode", getLockedMode());
-    }
-
-    public static int getLockedMode() {
-        return getIntSetting("inventory.lockmode");
     }
 
     public static int getLayoutStyle() {
@@ -333,10 +279,6 @@ public class NEIClientConfig
     public static void setSearchExpression(String expression) {
         world.nbt.setString("search", expression);
         world.saveNBT();
-    }
-
-    public static boolean getMagnetMode() {
-        return enabledActions.contains("magnet");
     }
 
     public static boolean invCreativeMode() {
@@ -440,9 +382,6 @@ public class NEIClientConfig
         if (!isEnabled())
             return false;
 
-        if (!modePermitsAction(name))
-            return false;
-
         String base = NEIActions.base(name);
         if (hasSMPCounterpart)
             return permissableActions.contains(base);
@@ -455,18 +394,6 @@ public class NEIClientConfig
             return false;
 
         return true;
-    }
-
-    private static boolean modePermitsAction(String name) {
-        if (getCheatMode() == 0) return false;
-        if (getCheatMode() == 2) return true;
-
-        String[] actions = getStringArrSetting("inventory.utilities");
-        for (String action : actions)
-            if (action.equalsIgnoreCase(name))
-                return true;
-
-        return false;
     }
 
     public static String[] getStringArrSetting(String s) {

@@ -53,13 +53,6 @@ public class LayoutManager implements IContainerInputHandler, IContainerTooltipH
     public static SaveLoadButton[] stateButtons;
     public static Button[] deleteButtons;
 
-    public static Button delete;
-    public static ButtonCycled gamemode;
-    public static Button rain;
-    public static Button magnet;
-    public static Button[] timeButtons = new Button[4];
-    public static Button heal;
-
     public static IRecipeOverlayRenderer overlayRenderer;
 
     public static HashMap<Integer, LayoutStyle> layoutStyles = new HashMap<Integer, LayoutStyle>();
@@ -387,139 +380,9 @@ public class LayoutManager implements IContainerInputHandler, IContainerTooltipH
             };
         }
 
-        delete = new Button()
-        {
-            @Override
-            public boolean onButtonPress(boolean rightclick) {
-                if ((state & 0x3) == 2)
-                    return false;
-
-                ItemStack held = getHeldItem();
-                if (held != null) {
-                    if (shiftKey()) {
-                        deleteHeldItem();
-                        deleteItemsOfType(held);
-                    } else if (rightclick)
-                        decreaseSlotStack(-999);
-                    else
-                        deleteHeldItem();
-                } else if (shiftKey())
-                    deleteEverything();
-                else
-                    NEIController.toggleDeleteMode();
-
-                return true;
-            }
-
-            public String getButtonTip() {
-                if ((state & 0x3) != 2) {
-                    if (shiftKey())
-                        return translate("inventory.delete.inv");
-                    if (NEIController.canUseDeleteMode())
-                        return getStateTip("delete", state);
-                }
-                return null;
-            }
-
-            @Override
-            public void postDraw(int mousex, int mousey) {
-                if(contains(mousex, mousey) && getHeldItem() != null && (state & 0x3) != 2)
-                    GuiDraw.drawTip(mousex + 9, mousey, translate("inventory.delete." + (shiftKey() ? "all" : "one"), GuiContainerManager.itemDisplayNameShort(getHeldItem())));
-            }
-        };
-        gamemode = new ButtonCycled()
-        {
-            @Override
-            public boolean onButtonPress(boolean rightclick) {
-                if (!rightclick) {
-                    cycleGamemode();
-                    return true;
-                }
-                return false;
-            }
-
-            public String getButtonTip() {
-                return translate("inventory.gamemode." + getNextGamemode());
-            }
-        };
-        gamemode.icons = new Image[3];
-        rain = new Button()
-        {
-            @Override
-            public boolean onButtonPress(boolean rightclick) {
-                if (handleDisabledButtonPress("rain", rightclick))
-                    return true;
-
-                if (!rightclick) {
-                    toggleRaining();
-                    return true;
-                }
-                return false;
-            }
-
-            public String getButtonTip() {
-                return getStateTip("rain", state);
-            }
-        };
-        magnet = new Button()
-        {
-            @Override
-            public boolean onButtonPress(boolean rightclick) {
-                if (!rightclick) {
-                    toggleMagnetMode();
-                    return true;
-                }
-                return false;
-            }
-
-            public String getButtonTip() {
-                return getStateTip("magnet", state);
-            }
-        };
         for (int i = 0; i < 4; i++) {
             final int zone = i;
-            timeButtons[i] = new Button()
-            {
-                @Override
-                public boolean onButtonPress(boolean rightclick) {
-                    if (handleDisabledButtonPress(NEIActions.timeZones[zone], rightclick))
-                        return true;
-
-                    if (!rightclick) {
-                        setHourForward(zone * 6);
-                        return true;
-                    }
-                    return false;
-                }
-
-                @Override
-                public String getButtonTip() {
-                    return getTimeTip(NEIActions.timeZones[zone], state);
-                }
-
-            };
         }
-        heal = new Button()
-        {
-            @Override
-            public boolean onButtonPress(boolean rightclick) {
-                if (!rightclick) {
-                    healPlayer();
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public String getButtonTip() {
-                return translate("inventory.heal");
-            }
-        };
-
-        delete.state |= 0x4;
-        gamemode.state |= 0x4;
-        rain.state |= 0x4;
-        magnet.state |= 0x4;
     }
 
     private static String getStateTip(String name, int state) {
@@ -545,10 +408,6 @@ public class LayoutManager implements IContainerInputHandler, IContainerTooltipH
     private static boolean setPropertyDisabled(String ident, boolean disable) {
         if (disable && NEIActions.base(ident).equals("time")) {
             int count = 0;
-            for (int i = 0; i < 4; i++) {
-                if (disabledActions.contains(NEIActions.timeZones[i]))
-                    count++;
-            }
             if (count == 3)
                 return false;
         }
@@ -622,24 +481,6 @@ public class LayoutManager implements IContainerInputHandler, IContainerTooltipH
                 if (isStateSaved(i))
                     addWidget(deleteButtons[i]);
             }
-        }
-        if (visiblity.showUtilityButtons) {
-            if (canPerformAction("time")) {
-                for (int i = 0; i < 4; i++)
-                    addWidget(timeButtons[i]);
-            }
-            if (canPerformAction("rain"))
-                addWidget(rain);
-            if (canPerformAction("heal"))
-                addWidget(heal);
-            if (canPerformAction("magnet"))
-                addWidget(magnet);
-            if (isValidGamemode("creative") ||
-                    isValidGamemode("creative+") ||
-                    isValidGamemode("adventure"))
-                addWidget(gamemode);
-            if (canPerformAction("delete"))
-                addWidget(delete);
         }
     }
 
@@ -781,20 +622,5 @@ public class LayoutManager implements IContainerInputHandler, IContainerTooltipH
     public void tickKeyStates() {
         if (Minecraft.getMinecraft().currentScreen != null)
             return;
-
-        if (KeyManager.keyStates.get("world.dawn").down)
-            timeButtons[0].onButtonPress(false);
-        if (KeyManager.keyStates.get("world.noon").down)
-            timeButtons[1].onButtonPress(false);
-        if (KeyManager.keyStates.get("world.dusk").down)
-            timeButtons[2].onButtonPress(false);
-        if (KeyManager.keyStates.get("world.midnight").down)
-            timeButtons[3].onButtonPress(false);
-        if (KeyManager.keyStates.get("world.rain").down)
-            rain.onButtonPress(false);
-        if (KeyManager.keyStates.get("world.heal").down)
-            heal.onButtonPress(false);
-        if (KeyManager.keyStates.get("world.creative").down)
-            gamemode.onButtonPress(false);
     }
 }

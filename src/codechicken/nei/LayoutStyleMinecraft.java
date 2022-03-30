@@ -17,17 +17,6 @@ public class LayoutStyleMinecraft extends LayoutStyleDefault
 
     @Override
     public void init() {
-        delete.icon = new Image(144, 12, 12, 12);
-        gamemode.icons[0] = new Image(132, 12, 12, 12);
-        gamemode.icons[1] = new Image(156, 12, 12, 12);
-        gamemode.icons[2] = new Image(168, 12, 12, 12);
-        rain.icon = new Image(120, 12, 12, 12);
-        magnet.icon = new Image(180, 24, 12, 12);
-        timeButtons[0].icon = new Image(132, 24, 12, 12);
-        timeButtons[1].icon = new Image(120, 24, 12, 12);
-        timeButtons[2].icon = new Image(144, 24, 12, 12);
-        timeButtons[3].icon = new Image(156, 24, 12, 12);
-        heal.icon = new Image(168, 24, 12, 12);
         dropDown.x = 90;
     }
 

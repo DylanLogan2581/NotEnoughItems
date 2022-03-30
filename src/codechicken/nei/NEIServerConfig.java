@@ -70,18 +70,8 @@ public class NEIServerConfig
         serverConfig.getTag("permissions").useBraces();
         serverConfig.getTag("permissions").setComment("List of players who can use these features.\nEg. time=CodeChicken, Friend1");
 
-        setDefaultFeature("time");
-        setDefaultFeature("rain");
-        setDefaultFeature("heal");
-        setDefaultFeature("magnet");
-        setDefaultFeature("creative");
-        setDefaultFeature("creative+");
-        setDefaultFeature("adventure");
-        setDefaultFeature("enchant");
-        setDefaultFeature("potion");
         setDefaultFeature("save-state");
         setDefaultFeature("item");
-        setDefaultFeature("delete");
         setDefaultFeature("notify-item", "CONSOLE, OP");
     }
 

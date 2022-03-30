@@ -32,13 +32,10 @@ public class NEICPH implements IClientPacketHandler
                 handleActionEnabled(packet);
                 break;
             case 13:
-                ClientHandler.instance().addSMPMagneticItem(packet.readInt(), mc.theWorld);
                 break;
             case 14:
-                handleGamemode(mc, packet.readUByte());
                 break;
             case 21:
-                ClientUtils.openSMPGui(packet.readUByte(), new GuiEnchantmentModifier(mc.thePlayer.inventory, mc.theWorld, 0, 0, 0));
                 break;
             case 23:
                 if (packet.readBoolean())
@@ -47,13 +44,8 @@ public class NEICPH implements IClientPacketHandler
                     mc.displayGuiScreen(new GuiInventory(mc.thePlayer));
                 break;
             case 24:
-                ClientUtils.openSMPGui(packet.readUByte(), new GuiPotionCreator(mc.thePlayer.inventory));
                 break;
         }
-    }
-
-    private void handleGamemode(Minecraft mc, int mode) {
-        mc.playerController.setGameType(NEIServerUtils.getGameType(mode));
     }
 
     private void handleActionEnabled(PacketCustom packet) {
@@ -161,32 +153,6 @@ public class NEICPH implements IClientPacketHandler
         packet.sendToServer();
     }
 
-    public static void sendToggleMagnetMode() {
-        PacketCustom packet = new PacketCustom(channel, 6);
-        packet.sendToServer();
-    }
-
-    public static void sendSetTime(int hour) {
-        PacketCustom packet = new PacketCustom(channel, 7);
-        packet.writeByte(hour);
-        packet.sendToServer();
-    }
-
-    public static void sendHeal() {
-        PacketCustom packet = new PacketCustom(channel, 8);
-        packet.sendToServer();
-    }
-
-    public static void sendToggleRain() {
-        PacketCustom packet = new PacketCustom(channel, 9);
-        packet.sendToServer();
-    }
-
-    public static void sendOpenEnchantmentWindow() {
-        PacketCustom packet = new PacketCustom(channel, 21);
-        packet.sendToServer();
-    }
-
     public static void sendModifyEnchantment(int enchID, int level, boolean add) {
         PacketCustom packet = new PacketCustom(channel, 22);
         packet.writeByte(enchID);
@@ -200,12 +166,6 @@ public class NEICPH implements IClientPacketHandler
         packet.writeString(name);
         packet.writeBoolean(enable);
         packet.sendToServer();
-    }
-
-    public static void sendGamemode(int mode) {
-        new PacketCustom(channel, 13)
-                .writeByte(mode)
-                .sendToServer();
     }
 
     public static void sendCreativeInv(boolean open) {
