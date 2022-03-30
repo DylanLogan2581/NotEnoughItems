@@ -66,7 +66,6 @@ public class LayoutManager implements IContainerInputHandler, IContainerTooltipH
 
     public static void load() {
         API.addLayoutStyle(0, new LayoutStyleMinecraft());
-        API.addLayoutStyle(1, new LayoutStyleTMIOld());
 
         instance = new LayoutManager();
         KeyManager.trackers.add(instance);
