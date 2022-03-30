@@ -50,8 +50,6 @@ public class NEIClientConfig
     public static ItemStackSet bannedBlocks = new ItemStackSet();
 
     static {
-        if (global.config.getTag("checkUpdates").getBooleanValue(true))
-            CCUpdateChecker.updateCheck("NotEnoughItems");
         linkOptionList();
         setDefaults();
     }
