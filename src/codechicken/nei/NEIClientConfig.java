@@ -83,41 +83,6 @@ public class NEIClientConfig
         API.addOption(new OptionGamemodes("inventory.gamemodes"));
 
         tag.getTag("inventory.layoutstyle").getIntValue(0);
-        API.addOption(new OptionCycled("inventory.layoutstyle", 0)
-        {
-            @Override
-            public String getPrefix() {
-                return translateN(name);
-            }
-
-            @Override
-            public String getButtonText() {
-                return NEIClientUtils.translate("layoutstyle." +
-                        LayoutManager.getLayoutStyle(renderTag().getIntValue()).getName());
-            }
-
-            @Override
-            public boolean cycle() {
-                LinkedList<Integer> list = new LinkedList<Integer>();
-                for (Entry<Integer, LayoutStyle> entry : LayoutManager.layoutStyles.entrySet())
-                    list.add(entry.getKey());
-
-                Collections.sort(list);
-
-                int nextLayout = renderTag().getIntValue();
-                if (nextLayout == list.getLast())//loop list
-                    nextLayout = -1;
-                for (Integer i : list) {
-                    if (i > nextLayout) {
-                        nextLayout = i;
-                        break;
-                    }
-                }
-
-                getTag().setIntValue(nextLayout);
-                return true;
-            }
-        });
 
         ItemSorter.initConfig(tag);
 
