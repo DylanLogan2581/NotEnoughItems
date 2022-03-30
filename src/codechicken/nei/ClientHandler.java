@@ -120,9 +120,7 @@ public class ClientHandler
         PacketCustom.assignHandler(NEICPH.channel, new NEICPH());
         FMLCommonHandler.instance().bus().register(instance);
         MinecraftForge.EVENT_BUS.register(instance);
-
-        API.registerHighlightHandler(new DefaultHighlightHandler(), ItemInfo.Layout.HEADER);
-        HUDRenderer.load();
+	API.registerHighlightHandler(new DefaultHighlightHandler(), ItemInfo.Layout.HEADER);
         WorldOverlayRenderer.load();
     }
 
@@ -159,8 +157,6 @@ public class ClientHandler
 
     @SubscribeEvent
     public void tickEvent(TickEvent.RenderTickEvent event) {
-        if(event.phase == Phase.END && NEIClientConfig.isEnabled())
-            HUDRenderer.renderOverlay();
     }
 
 

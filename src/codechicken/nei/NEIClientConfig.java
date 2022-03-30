@@ -127,11 +127,6 @@ public class NEIClientConfig
         tag.getTag("inventory.searchmode").getIntValue(1);
         API.addOption(new OptionCycled("inventory.searchmode", 3, true));
 
-        tag.getTag("world.highlight_tips").getBooleanValue(false);
-        tag.getTag("world.highlight_tips.x").getIntValue(5000);
-        tag.getTag("world.highlight_tips.y").getIntValue(100);
-        API.addOption(new OptionOpenGui("world.highlight_tips", GuiHighlightTips.class));
-
         tag.getTag("inventory.profileRecipes").getBooleanValue(false);
         API.addOption(new OptionToggleButton("inventory.profileRecipes", true));
 
@@ -157,7 +152,7 @@ public class NEIClientConfig
                 return global;
             }
 
-            @Override
+	    @Override
             public ConfigSet worldConfigSet() {
                 return world;
             }
@@ -186,7 +181,6 @@ public class NEIClientConfig
         API.addKeyBind("gui.search", Keyboard.KEY_F);
         API.addKeyBind("world.chunkoverlay", Keyboard.KEY_F9);
         API.addKeyBind("world.moboverlay", Keyboard.KEY_F7);
-        API.addKeyBind("world.highlight_tips", Keyboard.KEY_NUMPAD0);
         API.addKeyBind("world.dawn", 0);
         API.addKeyBind("world.noon", 0);
         API.addKeyBind("world.dusk", 0);

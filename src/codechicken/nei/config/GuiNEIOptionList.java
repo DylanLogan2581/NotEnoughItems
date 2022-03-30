@@ -11,8 +11,6 @@ import java.net.URI;
 
 public class GuiNEIOptionList extends GuiOptionList implements GuiYesNoCallback
 {
-    private GuiCCButton patreonButton;
-
     public GuiNEIOptionList(GuiScreen parent, OptionList optionList, boolean world) {
         super(parent, optionList, world);
     }
@@ -20,35 +18,20 @@ public class GuiNEIOptionList extends GuiOptionList implements GuiYesNoCallback
     @Override
     public void resize() {
         super.resize();
-        patreonButton.x = width-73;
-        patreonButton.y = height-23;
     }
 
     @Override
     public void addWidgets() {
         super.addWidgets();
-        add(patreonButton = new PatreonButton(0, 0, 70, 20).setActionCommand("patreon"));
     }
 
     @Override
     public void actionPerformed(String ident, Object... params) {
-        if (ident.equals("patreon")) {
-            GuiConfirmOpenLink gui = new GuiConfirmOpenLink(this, "patreon.com/cb", 0, true);
-            gui.func_146358_g();
-            mc.displayGuiScreen(gui);
-        } else
             super.actionPerformed(ident, params);
     }
 
     @Override
     public void confirmClicked(boolean yes, int id) {
-        if(yes && id == 0) {
-            try {
-                Desktop.getDesktop().browse(new URI("http://patreon.com/cb"));
-            } catch (Exception e) {
-                NEIClientConfig.logger.error("Failed to open patreon page", e);
-            }
-        }
         mc.displayGuiScreen(this);
     }
 }
