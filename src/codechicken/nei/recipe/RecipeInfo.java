@@ -113,7 +113,5 @@ public class RecipeInfo
         API.registerGuiOverlayHandler(GuiInventory.class, new DefaultOverlayHandler(63, 20), "crafting2x2");
         API.registerGuiOverlayHandler(GuiBrewingStand.class, new BrewingOverlayHandler(), "brewing");
         
-        API.registerRecipeHandler(new ProfilerRecipeHandler(true));
-        API.registerUsageHandler(new ProfilerRecipeHandler(false));
     }
 }

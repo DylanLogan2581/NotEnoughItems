@@ -71,9 +71,6 @@ public class NEIClientConfig
         tag.getTag("inventory.searchmode").getIntValue(1);
         API.addOption(new OptionCycled("inventory.searchmode", 3, true));
 
-        tag.getTag("inventory.profileRecipes").getBooleanValue(false);
-        API.addOption(new OptionToggleButton("inventory.profileRecipes", true));
-
         tag.getTag("command.item").setDefaultValue("/give {0} {1} {2} {3} {4}");
         API.addOption(new OptionTextField("command.item"));
 

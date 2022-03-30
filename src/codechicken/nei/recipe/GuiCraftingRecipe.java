@@ -1,6 +1,5 @@
 package codechicken.nei.recipe;
 
-import codechicken.core.TaskProfiler;
 import codechicken.nei.NEIClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -13,15 +12,12 @@ public class GuiCraftingRecipe extends GuiRecipe
         Minecraft mc = NEIClientUtils.mc();
         GuiContainer prevscreen = mc.currentScreen instanceof GuiContainer ? (GuiContainer) mc.currentScreen : null;
 
-        TaskProfiler profiler = ProfilerRecipeHandler.getProfiler();
         ArrayList<ICraftingHandler> handlers = new ArrayList<ICraftingHandler>();
         for (ICraftingHandler craftinghandler : craftinghandlers) {
-            profiler.start(craftinghandler.getRecipeName());
             ICraftingHandler handler = craftinghandler.getRecipeHandler(outputId, results);
             if (handler.numRecipes() > 0)
                 handlers.add(handler);
         }
-        profiler.end();
         if (handlers.isEmpty())
             return false;
 
